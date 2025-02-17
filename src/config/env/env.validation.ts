@@ -19,6 +19,18 @@ class EnvSchema {
 
   @IsString()
   DATABASE_URL: string;
+
+  @IsString()
+  ACCESS_TOKEN_SECRET: string;
+
+  @IsString()
+  ACCESS_TOKEN_EXPIRES_IN: string;
+
+  @IsString()
+  REFRESH_TOKEN_SECRET: string;
+
+  @IsString()
+  REFRESH_TOKEN_EXPIRES_IN: string;
 }
 
 export const zodValidateEnv = (env: Record<string, unknown>) => {

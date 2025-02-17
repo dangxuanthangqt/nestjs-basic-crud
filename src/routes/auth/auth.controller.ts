@@ -1,14 +1,30 @@
-import { Body, Controller, Post, SerializeOptions } from '@nestjs/common';
-import { RegisterRequestDto, RegisterResponseDto } from './auth.dto';
+import { Body, Controller, Post } from '@nestjs/common';
+import {
+  LoginRequestDto,
+  LoginResponseDto,
+  RegisterRequestDto,
+  RegisterResponseDto,
+} from './auth.dto';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @SerializeOptions({ type: RegisterResponseDto })
+  // @SerializeOptions({ type: CustomInterceptorRequestDto })
   @Post('register')
-  register(@Body() body: RegisterRequestDto) {
-    return this.authService.register(body);
+  async register(
+    @Body() body: RegisterRequestDto,
+  ): Promise<RegisterResponseDto> {
+    const result = await this.authService.register(body);
+
+    return new RegisterResponseDto(result);
+  }
+
+  @Post('login')
+  async login(@Body() body: LoginRequestDto): Promise<LoginResponseDto> {
+    const result = await this.authService.login(body);
+
+    return new LoginResponseDto(result);
   }
 }

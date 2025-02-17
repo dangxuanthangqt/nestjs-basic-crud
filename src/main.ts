@@ -1,11 +1,14 @@
-import { UnprocessableEntityException, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { IEnvConfig } from './interface/env.interface';
+import { TransformInterceptor } from './shared/interceptors/transform.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'log', 'debug'],
+  });
 
   const configService = app.get(ConfigService<IEnvConfig>);
 
@@ -20,10 +23,10 @@ async function bootstrap() {
         enableImplicitConversion: true,
       },
       exceptionFactory: (errors) => {
-        return new UnprocessableEntityException(
+        return new BadRequestException(
           errors.map((error) => {
             return {
-              property: error.property,
+              field: error.property,
               error: Object.values(error.constraints as object).join(', '),
             };
           }),
@@ -31,6 +34,8 @@ async function bootstrap() {
       },
     }),
   );
+
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   await app.listen(port ?? 3000);
 }
