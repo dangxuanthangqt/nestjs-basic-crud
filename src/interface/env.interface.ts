@@ -5,6 +5,8 @@ export interface IEnvConfig {
     accessTokenExpiresIn: string;
     refreshTokenSecret: string;
     refreshTokenExpiresIn: string;
+    secretApiKey: string;
+    logPretty?: string;
   };
   database: {
     port: string;

@@ -1,11 +1,26 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
 import {
   LoginRequestDto,
   LoginResponseDto,
+  LogoutResponseDto,
+  MeResponseDto,
+  RefreshTokenRequestDto,
+  RefreshTokenResponseDto,
   RegisterRequestDto,
   RegisterResponseDto,
-} from './auth.dto';
+  UpdateMeRequestDto,
+  UpdateMeResponseDto,
+} from '../../shared/dto/auth.dto';
 import { AuthService } from './auth.service';
+import { User } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
@@ -26,5 +41,38 @@ export class AuthController {
     const result = await this.authService.login(body);
 
     return new LoginResponseDto(result);
+  }
+
+  @Post('refresh-token')
+  async refreshToken(
+    @Body() body: RefreshTokenRequestDto,
+  ): Promise<RefreshTokenResponseDto> {
+    const result = await this.authService.refreshToken(body.refreshToken);
+
+    return result;
+  }
+
+  @Post('logout')
+  async logout(@Body() body: RefreshTokenRequestDto) {
+    const result = await this.authService.logout(body.refreshToken);
+
+    return new LogoutResponseDto(result);
+  }
+
+  @Get('me/:userId')
+  async me(@Param('userId', ParseIntPipe) userId: User['id']) {
+    const result = await this.authService.me(userId);
+
+    return new MeResponseDto(result);
+  }
+
+  @Put('me/:userId')
+  async updateMe(
+    @Param('userId', ParseIntPipe) userId: User['id'],
+    @Body() body: UpdateMeRequestDto,
+  ) {
+    const result = await this.authService.updateMe(userId, body);
+
+    return new UpdateMeResponseDto(result);
   }
 }

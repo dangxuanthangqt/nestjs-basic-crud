@@ -1,5 +1,12 @@
 import { plainToInstance } from 'class-transformer';
-import { IsNumber, IsString, Max, Min, validateSync } from 'class-validator';
+import {
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+  validateSync,
+} from 'class-validator';
 import { z } from 'zod';
 
 export const envSchema = z.object({
@@ -31,6 +38,13 @@ class EnvSchema {
 
   @IsString()
   REFRESH_TOKEN_EXPIRES_IN: string;
+
+  @IsString()
+  SECRET_API_KEY: string;
+
+  @IsOptional()
+  @IsString()
+  LOG_PRETTY: string;
 }
 
 export const zodValidateEnv = (env: Record<string, unknown>) => {

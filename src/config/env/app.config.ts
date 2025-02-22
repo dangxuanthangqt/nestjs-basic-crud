@@ -6,4 +6,6 @@ export default registerAs('app', () => ({
   accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,
   refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
   refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
+  secretApiKey: process.env.SECRET_API_KEY,
+  logPretty: process.env.LOG_PRETTY,
 }));

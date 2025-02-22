@@ -1,14 +1,23 @@
 import {
-  ConflictException,
+  // ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { HashingService } from 'src/shared/services/hashing.service';
 import { PrismaService } from 'src/shared/services/prisma.service';
-import { LoginRequestDto, RegisterRequestDto } from './auth.dto';
 import { TokenService } from 'src/shared/services/token.service';
+import {} from // isRecordToUpdateNotFoundPrismaError,
+// isUniqueConstraintPrismaError,
+'src/shared/utils/prisma-error';
+import {
+  LoginRequestDto,
+  LogoutResponseDto,
+  RegisterRequestDto,
+  UpdateMeRequestDto,
+} from '../../shared/dto/auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -21,26 +30,35 @@ export class AuthService {
   async register(body: RegisterRequestDto) {
     const hashedPassword = this.hashingService.hash(body.password);
 
-    try {
-      const user = await this.prismaService.user.create({
-        data: {
-          email: body.email,
-          name: body.name,
-          password: hashedPassword,
-        },
-      });
+    // This error is catch by the global prisma exception filter
 
-      return user;
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        throw new ConflictException('Email already exists');
-      }
+    // try {
+    //   const user = await this.prismaService.user.create({
+    //     data: {
+    //       email: body.email,
+    //       name: body.name,
+    //       password: hashedPassword,
+    //     },
+    //   });
 
-      throw error;
-    }
+    //   return user;
+    // } catch (error) {
+    //   if (isUniqueConstraintPrismaError(error)) {
+    //     throw new ConflictException('Email already exists.');
+    //   }
+
+    //   throw error;
+    // }
+
+    const user = await this.prismaService.user.create({
+      data: {
+        email: body.email,
+        name: body.name,
+        password: hashedPassword,
+      },
+    });
+
+    return user;
   }
 
   async login(body: LoginRequestDto) {
@@ -51,7 +69,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Email not found');
+      throw new UnauthorizedException('Email not found.');
     }
 
     const isPasswordMatch = this.hashingService.compare(
@@ -95,5 +113,121 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async refreshToken(refreshToken: string) {
+    try {
+      const { userId } =
+        await this.tokenService.verifyRefreshToken(refreshToken);
+
+      await this.prismaService.refreshToken.findUniqueOrThrow({
+        where: {
+          token: refreshToken,
+        },
+      });
+
+      await this.prismaService.refreshToken.delete({
+        where: {
+          token: refreshToken,
+        },
+      });
+
+      const tokens = await this.generateTokens({
+        userId,
+      });
+
+      return tokens;
+    } catch {
+      throw new UnauthorizedException('Invalid refresh token.');
+    }
+  }
+
+  async logout(refreshToken: string): Promise<LogoutResponseDto> {
+    try {
+      await this.prismaService.refreshToken.delete({
+        where: {
+          token: refreshToken,
+        },
+      });
+
+      return {
+        message: 'Logout successfully.',
+      };
+    } catch {
+      throw new UnauthorizedException('Invalid refresh token.');
+    }
+  }
+
+  async me(userId: User['id']) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        posts: {
+          select: {
+            id: true,
+            title: true,
+            content: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+
+    return user;
+  }
+
+  async updateMe(userId: User['id'], body: UpdateMeRequestDto) {
+    // const requestedEmail = body.email;
+
+    // if (requestedEmail) {
+    //   const userWithRequestedEmail = await this.prismaService.user.findUnique({
+    //     where: {
+    //       email: requestedEmail,
+    //     },
+    //   });
+
+    //   if (userWithRequestedEmail) {
+    //     throw new ConflictException('Email to update already existing.');
+    //   }
+    // }
+
+    // try {
+    //   const user = await this.prismaService.user.update({
+    //     where: {
+    //       id: userId,
+    //     },
+    //     data: {
+    //       ...body,
+    //     },
+    //   });
+
+    //   return user;
+    // } catch (error) {
+    //   if (isRecordToUpdateNotFoundPrismaError(error)) {
+    //     throw new NotFoundException('User not found to update.');
+    //   }
+
+    //   throw new NotFoundException();
+    // }
+
+    const user = await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        ...body,
+      },
+    });
+
+    return user;
   }
 }

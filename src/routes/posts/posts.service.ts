@@ -1,21 +1,47 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { Post } from '@prisma/client';
 import { PrismaService } from 'src/shared/services/prisma.service';
 
 @Injectable()
 export class PostsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  getPosts() {
-    return this.prismaService.post.findMany();
+  private readonly logger = new Logger(PostsService.name);
+
+  getPosts(authorId: Post['authorId']) {
+    this.logger.debug('Getting posts requested by authorId: ' + authorId);
+
+    return this.prismaService.post.findMany({
+      where: {
+        authorId,
+      },
+      select: {
+        id: true,
+        content: true,
+        title: true,
+        author: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
   }
 
-  createPost(data: { title: string; content: string }) {
+  createPost(
+    data: { title: string; content: string },
+    authorId: Post['authorId'],
+  ) {
+    this.logger.debug('Creating post requested by authorId: ' + authorId);
+
     return this.prismaService.post.create({
       data: {
         title: data.title,
         content: data.content,
-        authorId: 1,
+        authorId,
       },
     });
   }
+
+  updatePost(id: Post['id'], data: { title: string; content: string }) {}
 }
