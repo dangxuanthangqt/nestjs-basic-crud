@@ -1,11 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
-  Post,
-  Put,
   Param,
   ParseIntPipe,
+  Post,
+  Put,
 } from '@nestjs/common';
 
 import { Post as PostModel, User as UserModel } from '@prisma/client';
@@ -17,6 +18,7 @@ import ActiveUser from 'src/shared/decorators/active-user.decorator';
 import { AuthorizationHeader } from 'src/shared/decorators/authorization-header.decorator';
 import {
   PostRequestDto,
+  PostResponseDto,
   PostsResponseDto,
   UpdatePostRequestDto,
 } from 'src/shared/dto/post.dto';
@@ -42,6 +44,16 @@ export class PostsController {
     });
   }
 
+  @Get(':id')
+  async getPost(@Param('id', ParseIntPipe) postId: PostModel['id']) {
+    const result = await this.postsService.getPost(postId);
+
+    // response directly array of posts
+    // return plainToInstance(PostResponseDto, result);
+
+    return new PostResponseDto(result);
+  }
+
   @Post()
   createPost(
     @Body() post: PostRequestDto,
@@ -50,12 +62,26 @@ export class PostsController {
     return this.postsService.createPost(post, userId);
   }
 
+  @AuthorizationHeader([AuthorizationType.BEARER])
   @Put(':id')
   updatePost(
     @Body() body: UpdatePostRequestDto,
     @Param('id', ParseIntPipe) postId: PostModel['id'],
+    @ActiveUser('userId') authorId: UserModel['id'],
   ) {
-    console.log('postId', postId);
-    return this.postsService.updatePost(postId, body);
+    return this.postsService.updatePost({
+      postId,
+      authorId,
+      data: body,
+    });
+  }
+
+  @AuthorizationHeader([AuthorizationType.BEARER]) // Only Bearer
+  @Delete(':id')
+  async deletePost(
+    @Param('id', ParseIntPipe) postId: PostModel['id'],
+    @ActiveUser('userId') authorId: UserModel['id'],
+  ) {
+    return this.postsService.deletePost(postId, authorId);
   }
 }

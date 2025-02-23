@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Post } from '@prisma/client';
 import { UpdatePostRequestDto } from 'src/shared/dto/post.dto';
 import { PrismaService } from 'src/shared/services/prisma.service';
@@ -29,6 +29,32 @@ export class PostsService {
     });
   }
 
+  async getPost(id: Post['id']) {
+    this.logger.debug('Getting post requested by id: ' + id);
+
+    const post = await this.prismaService.post.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        content: true,
+        title: true,
+        author: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    if (!post) {
+      throw new NotFoundException('Post not found.');
+    }
+
+    return post;
+  }
+
   createPost(
     data: { title: string; content: string },
     authorId: Post['authorId'],
@@ -44,15 +70,38 @@ export class PostsService {
     });
   }
 
-  updatePost(id: Post['id'], data: UpdatePostRequestDto) {
-    this.logger.debug('Updating post requested by id: ' + id);
-    console.log('data', data);
+  updatePost({
+    postId,
+    authorId,
+    data,
+  }: {
+    postId: Post['id'];
+    authorId: Post['authorId'];
+    data: UpdatePostRequestDto;
+  }) {
+    this.logger.debug('Updating post requested by id: ' + postId);
 
     return this.prismaService.post.update({
       where: {
-        id,
+        id: postId,
+        authorId,
       },
       data,
     });
+  }
+
+  async deletePost(postId: Post['id'], authorId: Post['authorId']) {
+    this.logger.debug('Deleting post requested by id: ' + postId);
+
+    await this.prismaService.post.delete({
+      where: {
+        id: postId,
+        authorId,
+      },
+    });
+
+    return {
+      message: 'Post deleted successfully.',
+    };
   }
 }

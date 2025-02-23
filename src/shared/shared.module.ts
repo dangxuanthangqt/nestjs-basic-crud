@@ -1,5 +1,15 @@
-import { Global, Module, Provider } from '@nestjs/common';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import {
+  ClassSerializerInterceptor,
+  Global,
+  Module,
+  Provider,
+} from '@nestjs/common';
+import {
+  APP_FILTER,
+  APP_GUARD,
+  APP_INTERCEPTOR,
+  Reflector,
+} from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { EnvModule } from './env.module';
 import { AccessTokenGuard } from './guards/access-token.guard';
@@ -40,6 +50,16 @@ const filters: Provider[] = [
   },
 ];
 
+const serializerInterceptor: Provider = {
+  provide: APP_INTERCEPTOR,
+  useFactory: (reflector: Reflector) => {
+    return new ClassSerializerInterceptor(reflector, {
+      excludeExtraneousValues: true,
+    });
+  },
+  inject: [Reflector],
+};
+
 const loggerModule = LoggerModule.forRootAsync({
   useFactory: loggerFactory,
   inject: [ConfigService],
@@ -48,7 +68,7 @@ const loggerModule = LoggerModule.forRootAsync({
 @Global()
 @Module({
   imports: [EnvModule, JwtModule, loggerModule],
-  providers: [...sharedServices, ...guards, ...filters],
+  providers: [...sharedServices, ...guards, ...filters, serializerInterceptor],
   exports: sharedServices,
 })
 export class SharedModule {}

@@ -30,7 +30,7 @@ async function bootstrap() {
       errorHttpStatusCode: HttpStatus.BAD_REQUEST,
       exceptionFactory: (errors) => {
         const transformedErrors = transformValidateObject(errors);
-        console.log('transformedErrors', transformedErrors);
+
         return new ValidateException(transformedErrors);
       },
 
