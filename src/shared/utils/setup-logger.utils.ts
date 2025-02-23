@@ -91,10 +91,17 @@ export const loggerFactory = (
   configService: ConfigService<IEnvConfig>,
 ): Params => {
   const logPretty = configService.get('app.logPretty', { infer: true });
-
+  const logLevel = configService.get('app.logLevel', { infer: true });
+  console.log('logPretty', logPretty);
+  console.log('logLevel', logLevel);
   return {
     pinoHttp: {
-      // level: 'debug',
+      level: logLevel, // Phải có config này thì this.logger.debug mới working correctly
+
+      // level: 'debug': Thiết lập mức độ nhật ký là debug. Điều này có nghĩa là tất cả các thông báo nhật ký từ mức debug trở lên sẽ được ghi lại. Cụ thể, các mức độ debug, info, warn, error, và fatal sẽ được ghi lại.
+
+      // Nếu lv info thì chỉ ghi log từ info trở lên, this.logger.debug sẽ không log đc
+
       genReqId,
       customSuccessMessage,
       customErrorMessage,

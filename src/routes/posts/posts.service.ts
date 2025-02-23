@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Post } from '@prisma/client';
+import { UpdatePostRequestDto } from 'src/shared/dto/post.dto';
 import { PrismaService } from 'src/shared/services/prisma.service';
 
 @Injectable()
@@ -43,5 +44,15 @@ export class PostsService {
     });
   }
 
-  updatePost(id: Post['id'], data: { title: string; content: string }) {}
+  updatePost(id: Post['id'], data: UpdatePostRequestDto) {
+    this.logger.debug('Updating post requested by id: ' + id);
+    console.log('data', data);
+
+    return this.prismaService.post.update({
+      where: {
+        id,
+      },
+      data,
+    });
+  }
 }

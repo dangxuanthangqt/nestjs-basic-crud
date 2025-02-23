@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class PostRequestDto {
   @IsString()
@@ -42,3 +42,15 @@ export class PostsResponseDto {
     Object.assign(this, partial);
   }
 }
+
+export class UpdatePostRequestDto {
+  @IsOptional()
+  @IsString()
+  title?: string;
+
+  @IsOptional()
+  @IsString()
+  content: string;
+}
+
+export class UpdatePostResponseDto extends PostResponseDto {}

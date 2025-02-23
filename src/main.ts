@@ -10,7 +10,6 @@ import { transformValidateObject } from './shared/utils/app.utils';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    // logger: ['error', 'warn', 'log', 'debug'],
     bufferLogs: true,
   });
 

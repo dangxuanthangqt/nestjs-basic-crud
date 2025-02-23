@@ -7,6 +7,7 @@ export interface IEnvConfig {
     refreshTokenExpiresIn: string;
     secretApiKey: string;
     logPretty?: string;
+    logLevel?: string;
   };
   database: {
     port: string;

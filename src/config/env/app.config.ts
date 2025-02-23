@@ -1,4 +1,5 @@
 import { registerAs } from '@nestjs/config';
+import { PinoConfig } from 'src/shared/constants/logger-pino.constant';
 
 export default registerAs('app', () => ({
   port: process.env.PORT,
@@ -8,4 +9,5 @@ export default registerAs('app', () => ({
   refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
   secretApiKey: process.env.SECRET_API_KEY,
   logPretty: process.env.LOG_PRETTY,
+  logLevel: process.env.LOG_LEVEL ?? PinoConfig.LOG_LEVEL_INFO,
 }));

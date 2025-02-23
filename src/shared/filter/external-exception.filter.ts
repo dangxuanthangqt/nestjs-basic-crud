@@ -18,8 +18,10 @@ export class ExternalExceptionFilter implements ExceptionFilter {
 
     const defaultExceptionDto = new DefaultExceptionDto();
 
-    defaultExceptionDto.statusCode = exception.getStatus();
-    defaultExceptionDto.message = exception.message;
+    if (exception instanceof HttpException) {
+      defaultExceptionDto.statusCode = exception.getStatus();
+      defaultExceptionDto.message = exception.message;
+    }
 
     const logMessage = `${exception.constructor.name} occurred at ${new Date().toISOString()} - Status: ${defaultExceptionDto.statusCode}, Message: ${defaultExceptionDto.message}`;
 
@@ -27,6 +29,6 @@ export class ExternalExceptionFilter implements ExceptionFilter {
     // this.logger.error([logMessage, exception.stack]);
     // exception.stack is very long, log it if needed
 
-    response.status(exception.getStatus()).json(defaultExceptionDto);
+    response.status(defaultExceptionDto.statusCode).json(defaultExceptionDto);
   }
 }

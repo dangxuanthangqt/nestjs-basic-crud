@@ -45,6 +45,10 @@ class EnvSchema {
   @IsOptional()
   @IsString()
   LOG_PRETTY: string;
+
+  @IsOptional()
+  @IsString()
+  LOG_LEVEL: string;
 }
 
 export const zodValidateEnv = (env: Record<string, unknown>) => {
