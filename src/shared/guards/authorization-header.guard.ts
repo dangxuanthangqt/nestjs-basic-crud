@@ -5,16 +5,16 @@ import {
   HttpException,
   Injectable,
   UnauthorizedException,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
 import {
   AUTHORIZATION_HEADER_KEY,
   AuthorizationHeaderMetadata,
   AuthorizationType,
   CombinedAuthorizationCondition,
-} from '../constants/auth.constant';
-import { AccessTokenGuard } from './access-token.guard';
-import { ApiKeyGuard } from './api-key.guard';
+} from "../constants/auth.constant";
+import { AccessTokenGuard } from "./access-token.guard";
+import { ApiKeyGuard } from "./api-key.guard";
 
 @Injectable()
 export class AuthorizationHeaderGuard implements CanActivate {
@@ -65,7 +65,7 @@ export class AuthorizationHeaderGuard implements CanActivate {
         }
       }
 
-      throw new UnauthorizedException('Authorization header is invalid.');
+      throw new UnauthorizedException("Authorization header is invalid.");
     }
 
     if (combinedCondition === CombinedAuthorizationCondition.AND) {

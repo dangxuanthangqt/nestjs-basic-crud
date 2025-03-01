@@ -1,4 +1,4 @@
-import { plainToInstance } from 'class-transformer';
+import { plainToInstance } from "class-transformer";
 import {
   IsNumber,
   IsOptional,
@@ -6,13 +6,13 @@ import {
   Max,
   Min,
   validateSync,
-} from 'class-validator';
-import { z } from 'zod';
+} from "class-validator";
+import { z } from "zod";
 
 export const envSchema = z.object({
   //   PORT: z.coerce.number(),
   PORT: z.preprocess(
-    (val) => (typeof val === 'string' ? Number(val) : val),
+    (val) => (typeof val === "string" ? Number(val) : val),
     z.number(),
   ),
   DATABASE_URL: z.string().url(),
@@ -56,11 +56,11 @@ export const zodValidateEnv = (env: Record<string, unknown>) => {
 
   if (!parsedEnv.success) {
     console.error(
-      '❌ Environment configuration errors:',
+      "❌ Environment configuration errors:",
       parsedEnv.error.format(),
     );
 
-    throw new Error('Config validation error');
+    throw new Error("Config validation error");
   }
 
   return parsedEnv.data;

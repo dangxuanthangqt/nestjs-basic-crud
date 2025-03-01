@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { compareSync, hashSync } from 'bcrypt';
+import { Injectable } from "@nestjs/common";
+import { compareSync, hashSync } from "bcrypt";
 
 const saltRounds = 10;
 

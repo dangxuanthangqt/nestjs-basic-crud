@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
-import { IEnvConfig } from 'src/interface/env.interface';
-import { IJwtPayload } from 'src/interface/jwt.interface';
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
+import { User } from "@prisma/client";
+import { IEnvConfig } from "src/interface/env.interface";
+import { IJwtPayload } from "src/interface/jwt.interface";
 
-type UserId = User['id'];
+type UserId = User["id"];
 
 @Injectable()
 export class TokenService {
@@ -15,39 +15,39 @@ export class TokenService {
   ) {}
 
   signAccessToken(payload: { userId: UserId }) {
-    const secret = this.configService.get('app.accessTokenSecret', {
+    const secret = this.configService.get("app.accessTokenSecret", {
       infer: true,
     });
 
-    const expiresIn = this.configService.get('app.accessTokenExpiresIn', {
+    const expiresIn = this.configService.get("app.accessTokenExpiresIn", {
       infer: true,
     });
 
     return this.jwtService.sign(payload, {
       secret,
       expiresIn,
-      algorithm: 'HS256',
+      algorithm: "HS256",
     });
   }
 
   signRefreshToken(payload: { userId: UserId }) {
-    const secret = this.configService.get('app.refreshTokenSecret', {
+    const secret = this.configService.get("app.refreshTokenSecret", {
       infer: true,
     });
 
-    const expiresIn = this.configService.get('app.refreshTokenExpiresIn', {
+    const expiresIn = this.configService.get("app.refreshTokenExpiresIn", {
       infer: true,
     });
 
     return this.jwtService.sign(payload, {
       secret,
       expiresIn,
-      algorithm: 'HS256',
+      algorithm: "HS256",
     });
   }
 
   verifyAccessToken(token: string): Promise<IJwtPayload> {
-    const secret = this.configService.get('app.accessTokenSecret', {
+    const secret = this.configService.get("app.accessTokenSecret", {
       infer: true,
     });
 
@@ -57,7 +57,7 @@ export class TokenService {
   }
 
   verifyRefreshToken(token: string): Promise<IJwtPayload> {
-    const secret = this.configService.get('app.refreshTokenSecret', {
+    const secret = this.configService.get("app.refreshTokenSecret", {
       infer: true,
     });
 

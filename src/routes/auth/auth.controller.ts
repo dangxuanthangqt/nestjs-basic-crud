@@ -6,7 +6,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import {
   LoginRequestDto,
   LoginResponseDto,
@@ -18,16 +18,16 @@ import {
   RegisterResponseDto,
   UpdateMeRequestDto,
   UpdateMeResponseDto,
-} from '../../shared/dto/auth.dto';
-import { AuthService } from './auth.service';
-import { User } from '@prisma/client';
+} from "../../shared/dto/auth.dto";
+import { AuthService } from "./auth.service";
+import { User } from "@prisma/client";
 
-@Controller('auth')
+@Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   // @SerializeOptions({ type: CustomInterceptorRequestDto })
-  @Post('register')
+  @Post("register")
   async register(
     @Body() body: RegisterRequestDto,
   ): Promise<RegisterResponseDto> {
@@ -36,14 +36,14 @@ export class AuthController {
     return new RegisterResponseDto(result);
   }
 
-  @Post('login')
+  @Post("login")
   async login(@Body() body: LoginRequestDto): Promise<LoginResponseDto> {
     const result = await this.authService.login(body);
 
     return new LoginResponseDto(result);
   }
 
-  @Post('refresh-token')
+  @Post("refresh-token")
   async refreshToken(
     @Body() body: RefreshTokenRequestDto,
   ): Promise<RefreshTokenResponseDto> {
@@ -52,23 +52,23 @@ export class AuthController {
     return result;
   }
 
-  @Post('logout')
+  @Post("logout")
   async logout(@Body() body: RefreshTokenRequestDto) {
     const result = await this.authService.logout(body.refreshToken);
 
     return new LogoutResponseDto(result);
   }
 
-  @Get('me/:userId')
-  async me(@Param('userId', ParseIntPipe) userId: User['id']) {
+  @Get("me/:userId")
+  async me(@Param("userId", ParseIntPipe) userId: User["id"]) {
     const result = await this.authService.me(userId);
 
     return new MeResponseDto(result);
   }
 
-  @Put('me/:userId')
+  @Put("me/:userId")
   async updateMe(
-    @Param('userId', ParseIntPipe) userId: User['id'],
+    @Param("userId", ParseIntPipe) userId: User["id"],
     @Body() body: UpdateMeRequestDto,
   ) {
     const result = await this.authService.updateMe(userId, body);

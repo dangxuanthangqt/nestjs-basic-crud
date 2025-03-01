@@ -1,0 +1,14 @@
+/dist
+/build
+
+
+# testing
+/coverage
+
+# manifestation of the manifest
+pnpm-lock.yaml
+
+*.log
+
+/**/*.js
+/**/*.js.map

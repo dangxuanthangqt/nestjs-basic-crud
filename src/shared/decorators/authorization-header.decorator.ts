@@ -1,9 +1,9 @@
-import { SetMetadata } from '@nestjs/common';
+import { SetMetadata } from "@nestjs/common";
 import {
   AUTHORIZATION_HEADER_KEY,
   AuthorizationTypeType,
   CombinedAuthorizationConditionType,
-} from '../constants/auth.constant';
+} from "../constants/auth.constant";
 
 export const AuthorizationHeader = (
   authorizationTypes: AuthorizationTypeType[],

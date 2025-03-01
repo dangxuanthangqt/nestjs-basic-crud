@@ -1,7 +1,7 @@
-import { registerAs } from '@nestjs/config';
-import { PinoConfig } from 'src/shared/constants/logger-pino.constant';
+import { registerAs } from "@nestjs/config";
+import { PinoConfig } from "src/shared/constants/logger-pino.constant";
 
-export default registerAs('app', () => ({
+export default registerAs("app", () => ({
   port: process.env.PORT,
   accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
   accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,

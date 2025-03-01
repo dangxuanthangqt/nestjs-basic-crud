@@ -1,4 +1,4 @@
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 function isPrismaClientKnownRequestError(
   error: unknown,
@@ -9,13 +9,13 @@ function isPrismaClientKnownRequestError(
 export function isUniqueConstraintPrismaError(
   error: unknown,
 ): error is PrismaClientKnownRequestError {
-  return isPrismaClientKnownRequestError(error) && error.code === 'P2002';
+  return isPrismaClientKnownRequestError(error) && error.code === "P2002";
 }
 
 export function isRecordToUpdateNotFoundPrismaError(
   error: unknown,
 ): error is PrismaClientKnownRequestError {
-  return isPrismaClientKnownRequestError(error) && error.code === 'P2025';
+  return isPrismaClientKnownRequestError(error) && error.code === "P2025";
 }
 
 export { isPrismaClientKnownRequestError };

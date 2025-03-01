@@ -1,5 +1,5 @@
-import { ValidationError } from '@nestjs/common';
-import { ErrorDetailDto } from '../dto/error-detail.dto';
+import { ValidationError } from "@nestjs/common";
+import { ErrorDetailDto } from "../dto/error-detail.dto";
 
 export const transformValidateObject = (
   errors: ValidationError[],

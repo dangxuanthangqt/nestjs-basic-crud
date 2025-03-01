@@ -4,20 +4,20 @@ import {
   NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
-} from '@nestjs/common';
-import { User } from '@prisma/client';
-import { HashingService } from 'src/shared/services/hashing.service';
-import { PrismaService } from 'src/shared/services/prisma.service';
-import { TokenService } from 'src/shared/services/token.service';
+} from "@nestjs/common";
+import { User } from "@prisma/client";
+import { HashingService } from "src/shared/services/hashing.service";
+import { PrismaService } from "src/shared/services/prisma.service";
+import { TokenService } from "src/shared/services/token.service";
 import {} from // isRecordToUpdateNotFoundPrismaError,
 // isUniqueConstraintPrismaError,
-'src/shared/utils/prisma-error';
+"src/shared/utils/prisma-error";
 import {
   LoginRequestDto,
   LogoutResponseDto,
   RegisterRequestDto,
   UpdateMeRequestDto,
-} from '../../shared/dto/auth.dto';
+} from "../../shared/dto/auth.dto";
 
 @Injectable()
 export class AuthService {
@@ -69,7 +69,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Email not found.');
+      throw new UnauthorizedException("Email not found.");
     }
 
     const isPasswordMatch = this.hashingService.compare(
@@ -81,8 +81,8 @@ export class AuthService {
       // Điều này có nghĩa là server đã hiểu được nội dung của request (ví dụ, cú pháp JSON hợp lệ), nhưng không thể xử lý được dữ liệu đó do các lỗi về validation hoặc các quy tắc nghiệp vụ không được thoả mãn.
       throw new UnprocessableEntityException([
         {
-          field: 'password',
-          error: 'Password is incorrect',
+          field: "password",
+          error: "Password is incorrect",
         },
       ]);
     }
@@ -92,7 +92,7 @@ export class AuthService {
     return tokens;
   }
 
-  async generateTokens(payload: { userId: User['id'] }) {
+  async generateTokens(payload: { userId: User["id"] }) {
     const [accessToken, refreshToken] = await Promise.all([
       this.tokenService.signAccessToken(payload),
       this.tokenService.signRefreshToken(payload),
@@ -138,7 +138,7 @@ export class AuthService {
 
       return tokens;
     } catch {
-      throw new UnauthorizedException('Invalid refresh token.');
+      throw new UnauthorizedException("Invalid refresh token.");
     }
   }
 
@@ -151,14 +151,14 @@ export class AuthService {
       });
 
       return {
-        message: 'Logout successfully.',
+        message: "Logout successfully.",
       };
     } catch {
-      throw new UnauthorizedException('Invalid refresh token.');
+      throw new UnauthorizedException("Invalid refresh token.");
     }
   }
 
-  async me(userId: User['id']) {
+  async me(userId: User["id"]) {
     const user = await this.prismaService.user.findUnique({
       where: {
         id: userId,
@@ -179,13 +179,13 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found.');
+      throw new NotFoundException("User not found.");
     }
 
     return user;
   }
 
-  async updateMe(userId: User['id'], body: UpdateMeRequestDto) {
+  async updateMe(userId: User["id"], body: UpdateMeRequestDto) {
     // const requestedEmail = body.email;
 
     // if (requestedEmail) {

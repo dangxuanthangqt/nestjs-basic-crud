@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { BadRequestException } from '@nestjs/common';
-import { ErrorDetailDto } from '../dto/error-detail.dto';
-import { ErrorMessage } from '../constants/error-message.constant';
-import { ErrorCode } from '../constants/error-code.constant';
+import { BadRequestException } from "@nestjs/common";
+import { ErrorDetailDto } from "../dto/error-detail.dto";
+import { ErrorMessage } from "../constants/error-message.constant";
+import { ErrorCode } from "../constants/error-code.constant";
 
 export class ValidateException extends BadRequestException {
   constructor(

@@ -4,9 +4,9 @@ import {
   ExceptionFilter,
   HttpException,
   Logger,
-} from '@nestjs/common';
-import { Response } from 'express';
-import { DefaultExceptionDto } from '../dto/default-exception.dto';
+} from "@nestjs/common";
+import { Response } from "express";
+import { DefaultExceptionDto } from "../dto/default-exception.dto";
 
 @Catch(HttpException)
 export class ExternalExceptionFilter implements ExceptionFilter {

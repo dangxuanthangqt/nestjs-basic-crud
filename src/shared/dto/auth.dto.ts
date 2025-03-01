@@ -1,17 +1,17 @@
-import { Exclude, Expose, Type } from 'class-transformer';
-import { IsEmail, IsOptional, IsString, Length } from 'class-validator';
-import { IsPasswordMatch } from 'src/shared/decorators/match-password.decorator';
+import { Exclude, Expose, Type } from "class-transformer";
+import { IsEmail, IsOptional, IsString, Length } from "class-validator";
+import { IsPasswordMatch } from "src/shared/decorators/match-password.decorator";
 
 export class RegisterRequestDto {
   @IsEmail()
   email: string;
 
   @IsString()
-  @Length(8, 20, { message: 'Password must be between 8 and 20 characters.' })
+  @Length(8, 20, { message: "Password must be between 8 and 20 characters." })
   password: string;
 
   @IsString()
-  @IsPasswordMatch('password')
+  @IsPasswordMatch("password")
   confirmPassword: string;
 
   @IsString()
@@ -51,7 +51,7 @@ export class LoginRequestDto {
   email: string;
 
   @IsString()
-  @Length(8, 20, { message: 'Password must be between 8 and 20 characters.' })
+  @Length(8, 20, { message: "Password must be between 8 and 20 characters." })
   password: string;
 }
 

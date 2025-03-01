@@ -1,12 +1,12 @@
-import { HttpStatus, ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { NestFactory } from '@nestjs/core';
-import { Logger } from 'nestjs-pino';
-import { AppModule } from './app.module';
-import { IEnvConfig } from './interface/env.interface';
-import { ValidateException } from './shared/exceptions/validate.exception';
-import { TransformInterceptor } from './shared/interceptors/transform.interceptor';
-import { transformValidateObject } from './shared/utils/app.utils';
+import { HttpStatus, ValidationPipe } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { NestFactory } from "@nestjs/core";
+import { Logger } from "nestjs-pino";
+import { AppModule } from "./app.module";
+import { IEnvConfig } from "./interface/env.interface";
+import { ValidateException } from "./shared/exceptions/validate.exception";
+import { TransformInterceptor } from "./shared/interceptors/transform.interceptor";
+import { transformValidateObject } from "./shared/utils/app.utils";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -17,7 +17,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService<IEnvConfig>);
 
-  const port = configService.get('app.port', { infer: true });
+  const port = configService.get("app.port", { infer: true });
 
   app.useGlobalPipes(
     new ValidationPipe({

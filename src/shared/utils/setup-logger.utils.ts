@@ -1,30 +1,30 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-base-to-string */
-import { type Params } from 'nestjs-pino';
-import { type IncomingMessage, type ServerResponse } from 'http';
-import { GenReqId, Options, ReqId } from 'pino-http';
-import { v4 as uuidv4 } from 'uuid';
-import { ConfigService } from '@nestjs/config';
-import { IEnvConfig } from 'src/interface/env.interface';
+import { type Params } from "nestjs-pino";
+import { type IncomingMessage, type ServerResponse } from "http";
+import { GenReqId, Options, ReqId } from "pino-http";
+import { v4 as uuidv4 } from "uuid";
+import { ConfigService } from "@nestjs/config";
+import { IEnvConfig } from "src/interface/env.interface";
 
 // https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#logseverity
 const PinoLevelToSeverityLookup = {
-  trace: 'DEBUG',
-  debug: 'DEBUG',
-  info: 'INFO',
-  warn: 'WARNING',
-  error: 'ERROR',
-  fatal: 'CRITICAL',
+  trace: "DEBUG",
+  debug: "DEBUG",
+  info: "INFO",
+  warn: "WARNING",
+  error: "ERROR",
+  fatal: "CRITICAL",
 } as const;
 
 const redactPaths = [
-  'req.headers.authorization',
-  'req.body.token',
-  'req.body.email',
-  'req.body.phoneNumber',
-  'req.body.password',
-  'req.body.oldPassword',
-  'req.body.newPassword',
+  "req.headers.authorization",
+  "req.body.token",
+  "req.body.email",
+  "req.body.phoneNumber",
+  "req.body.password",
+  "req.body.oldPassword",
+  "req.body.newPassword",
 ];
 
 const customSuccessMessage = (
@@ -32,11 +32,11 @@ const customSuccessMessage = (
   res: ServerResponse<IncomingMessage>,
   responseTime: number,
 ) => {
-  return `[${req.id || '*'}] "${req.method} ${req.url}" ${res.statusCode} - "${req.headers['host']}" "${req.headers['user-agent']}" - ${responseTime} ms`;
+  return `[${req.id || "*"}] "${req.method} ${req.url}" ${res.statusCode} - "${req.headers["host"]}" "${req.headers["user-agent"]}" - ${responseTime} ms`;
 };
 
 const customReceivedMessage = (req: IncomingMessage) => {
-  return `[${req.id || '*'}] "${req.method} ${req.url}"`;
+  return `[${req.id || "*"}] "${req.method} ${req.url}"`;
 };
 
 const customErrorMessage = (
@@ -44,7 +44,7 @@ const customErrorMessage = (
   res: ServerResponse<IncomingMessage>,
   err: Error,
 ) => {
-  return `[${req.id || '*'}] "${req.method} ${req.url}" ${res.statusCode} - "${req.headers['host']}" "${req.headers['user-agent']}" - message: ${err.message}`;
+  return `[${req.id || "*"}] "${req.method} ${req.url}" ${res.statusCode} - "${req.headers["host"]}" "${req.headers["user-agent"]}" - message: ${err.message}`;
 };
 
 const genReqId: GenReqId = (
@@ -52,20 +52,20 @@ const genReqId: GenReqId = (
   res: ServerResponse<IncomingMessage>,
 ) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-  const id: ReqId = req.headers['x-request-id'] || uuidv4();
-  res.setHeader('X-Request-Id', id.toString());
+  const id: ReqId = req.headers["x-request-id"] || uuidv4();
+  res.setHeader("X-Request-Id", id.toString());
   return id;
 };
 
 function localLoggingConfig(): Options {
   return {
-    messageKey: 'msg',
+    messageKey: "msg",
     transport: {
-      target: 'pino-pretty',
+      target: "pino-pretty",
       options: {
         singleLine: true,
         ignore:
-          'req.id,req.method,req.url,req.headers,req.remoteAddress,req.remotePort,res.headers',
+          "req.id,req.method,req.url,req.headers,req.remoteAddress,req.remotePort,res.headers",
       },
     },
   };
@@ -73,13 +73,13 @@ function localLoggingConfig(): Options {
 
 function gcpLoggingConfig(): Options {
   return {
-    messageKey: 'message',
+    messageKey: "message",
     formatters: {
       level(label: keyof typeof PinoLevelToSeverityLookup, number) {
         return {
           severity:
             PinoLevelToSeverityLookup[label] ||
-            PinoLevelToSeverityLookup['info'],
+            PinoLevelToSeverityLookup["info"],
           level: number,
         };
       },
@@ -90,10 +90,10 @@ function gcpLoggingConfig(): Options {
 export const loggerFactory = (
   configService: ConfigService<IEnvConfig>,
 ): Params => {
-  const logPretty = configService.get('app.logPretty', { infer: true });
-  const logLevel = configService.get('app.logLevel', { infer: true });
-  console.log('logPretty', logPretty);
-  console.log('logLevel', logLevel);
+  const logPretty = configService.get("app.logPretty", { infer: true });
+  const logLevel = configService.get("app.logLevel", { infer: true });
+  console.log("logPretty", logPretty);
+  console.log("logLevel", logLevel);
   return {
     pinoHttp: {
       level: logLevel, // Phải có config này thì this.logger.debug mới working correctly
@@ -108,9 +108,9 @@ export const loggerFactory = (
       customReceivedMessage,
       redact: {
         paths: redactPaths, // hide sensitive information
-        censor: '**GDPR COMPLIANT**',
+        censor: "**GDPR COMPLIANT**",
       }, // Redact sensitive information
-      ...(logPretty === 'true' ? localLoggingConfig() : gcpLoggingConfig()),
+      ...(logPretty === "true" ? localLoggingConfig() : gcpLoggingConfig()),
     },
   };
 };

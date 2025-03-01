@@ -3,26 +3,26 @@ import {
   Global,
   Module,
   Provider,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import {
   APP_FILTER,
   APP_GUARD,
   APP_INTERCEPTOR,
   Reflector,
-} from '@nestjs/core';
-import { JwtModule } from '@nestjs/jwt';
-import { EnvModule } from './env.module';
-import { AccessTokenGuard } from './guards/access-token.guard';
-import { ApiKeyGuard } from './guards/api-key.guard';
-import { AuthorizationHeaderGuard } from './guards/authorization-header.guard';
-import { HashingService } from './services/hashing.service';
-import { PrismaService } from './services/prisma.service';
-import { TokenService } from './services/token.service';
-import { PrismaClientExceptionFilter } from './filter/prisma-exception.filter';
-import { LoggerModule } from 'nestjs-pino';
-import { loggerFactory } from './utils/setup-logger.utils';
-import { ConfigService } from '@nestjs/config';
-import { ExternalExceptionFilter } from './filter/external-exception.filter';
+} from "@nestjs/core";
+import { JwtModule } from "@nestjs/jwt";
+import { EnvModule } from "./env.module";
+import { AccessTokenGuard } from "./guards/access-token.guard";
+import { ApiKeyGuard } from "./guards/api-key.guard";
+import { AuthorizationHeaderGuard } from "./guards/authorization-header.guard";
+import { HashingService } from "./services/hashing.service";
+import { PrismaService } from "./services/prisma.service";
+import { TokenService } from "./services/token.service";
+import { PrismaClientExceptionFilter } from "./filter/prisma-exception.filter";
+import { LoggerModule } from "nestjs-pino";
+import { loggerFactory } from "./utils/setup-logger.utils";
+import { ConfigService } from "@nestjs/config";
+import { ExternalExceptionFilter } from "./filter/external-exception.filter";
 
 const sharedServices: Provider[] = [
   PrismaService,

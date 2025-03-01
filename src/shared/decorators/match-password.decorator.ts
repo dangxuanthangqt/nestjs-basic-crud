@@ -2,7 +2,7 @@ import {
   registerDecorator,
   ValidationOptions,
   ValidationArguments,
-} from 'class-validator';
+} from "class-validator";
 
 export function IsPasswordMatch(
   property: string,
@@ -10,7 +10,7 @@ export function IsPasswordMatch(
 ) {
   return function (object: object, propertyName: string) {
     registerDecorator({
-      name: 'matchPassword',
+      name: "matchPassword",
       target: object.constructor,
       propertyName: propertyName,
       constraints: [property],
@@ -22,13 +22,13 @@ export function IsPasswordMatch(
             relatedPropertyName
           ];
           return (
-            typeof value === 'string' &&
-            typeof relatedValue === 'string' &&
+            typeof value === "string" &&
+            typeof relatedValue === "string" &&
             value === relatedValue
           );
         },
         defaultMessage(args: ValidationArguments) {
-          console.log('args', args);
+          console.log("args", args);
           return `${args.property} must match ${args.constraints[0]}.`;
         },
       },
