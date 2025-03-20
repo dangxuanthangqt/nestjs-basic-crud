@@ -5,7 +5,7 @@ import { Logger } from "nestjs-pino";
 import { AppModule } from "./app.module";
 import { IEnvConfig } from "./interface/env.interface";
 import { ValidateException } from "./shared/exceptions/validate.exception";
-import { TransformInterceptor } from "./shared/interceptors/transform.interceptor";
+// import { TransformInterceptor } from "./shared/interceptors/transform.interceptor";
 import { transformValidateObject } from "./shared/utils/app.utils";
 
 async function bootstrap() {
@@ -18,6 +18,12 @@ async function bootstrap() {
   const configService = app.get(ConfigService<IEnvConfig>);
 
   const port = configService.get("app.port", { infer: true });
+
+  app.enableCors({
+    origin: "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true, // If you need to send cookies
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -47,7 +53,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useGlobalInterceptors(new TransformInterceptor());
+  // app.useGlobalInterceptors(new TransformInterceptor());
 
   await app.listen(port ?? 3000);
 }

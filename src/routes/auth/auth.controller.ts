@@ -21,6 +21,8 @@ import {
 } from "../../shared/dto/auth.dto";
 import { AuthService } from "./auth.service";
 import { User } from "@prisma/client";
+import { AuthorizationHeader } from "src/shared/decorators/authorization-header.decorator";
+import { AuthorizationType } from "src/shared/constants/auth.constant";
 
 @Controller("auth")
 export class AuthController {
@@ -59,6 +61,7 @@ export class AuthController {
     return new LogoutResponseDto(result);
   }
 
+  @AuthorizationHeader([AuthorizationType.BEARER])
   @Get("me/:userId")
   async me(@Param("userId", ParseIntPipe) userId: User["id"]) {
     const result = await this.authService.me(userId);

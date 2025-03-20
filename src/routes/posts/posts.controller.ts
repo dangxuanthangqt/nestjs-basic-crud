@@ -12,7 +12,7 @@ import {
 import { Post as PostModel, User as UserModel } from "@prisma/client";
 import {
   AuthorizationType,
-  CombinedAuthorizationCondition,
+  // CombinedAuthorizationCondition,
 } from "src/shared/constants/auth.constant";
 import ActiveUser from "src/shared/decorators/active-user.decorator";
 import { AuthorizationHeader } from "src/shared/decorators/authorization-header.decorator";
@@ -25,10 +25,11 @@ import {
 import { PostsService } from "./posts.service";
 
 @Controller("posts")
-@AuthorizationHeader(
-  [AuthorizationType.API_KEY, AuthorizationType.BEARER],
-  CombinedAuthorizationCondition.AND,
-)
+// @AuthorizationHeader(
+//   [AuthorizationType.API_KEY, AuthorizationType.BEARER],
+//   CombinedAuthorizationCondition.OR,
+// )
+@AuthorizationHeader([AuthorizationType.BEARER])
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
